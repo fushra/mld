@@ -1,0 +1,35 @@
+{
+  "name": "mdev",
+  "version": "1.0.0-a.0",
+  "description": "An experemental everything environment for meml ",
+  "main": "dist/app.js",
+  "scripts": {
+    "app": "ts-node ./src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fushra/mdev.git"
+  },
+  "keywords": [
+    "meml",
+    "web",
+    "language",
+    "dev",
+    "devtools"
+  ],
+  "author": "TrickyPR",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/fushra/mdev/issues"
+  },
+  "homepage": "https://github.com/fushra/mdev#readme",
+  "devDependencies": {
+    "@types/node": "^15.3.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "commander": "^7.2.0"
+  }
+}
