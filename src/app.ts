@@ -3,6 +3,8 @@ import { Command } from 'commander'
 
 // Local imports
 import packageConfig from '../package.json'
+import { init } from './commands'
+import { currentOrPath } from './utils'
 
 // Create a commander context for this program
 const program = new Command()
@@ -15,7 +17,7 @@ program.version(packageConfig.version).description(packageConfig.description)
 program
   .command('init [directory]')
   .description('Create a MEML project in the current or specified directory')
-  .action(() => console.log('TODO: Make initializing a directory work'))
+  .action((directory) => init(currentOrPath(directory)))
 
 // The command for starting development in a directory
 // TODO: Implement

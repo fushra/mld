@@ -1,0 +1,17 @@
+{
+  "folders": [".vscode", "src"],
+  "files": [
+    {
+      "path": "src/index.meml",
+      "contents": "(head \n    (title 'MEML app')\n)\n(body \n    (h1 'Hello world!'))"
+    },
+    {
+      "path": ".vscode/extensions.json",
+      "contents": "{\"recommendations\": [\"fushra.meml\"]}"
+    },
+    {
+      "path": "app.json",
+      "contents": "{\n    \"pages\": [\"index\"]\n}"
+    }
+  ]
+}
