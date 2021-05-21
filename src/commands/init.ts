@@ -9,18 +9,7 @@ import defaultStructure from './defaultStructure.json'
 export const init = async (path: string) => {
   const folderExists = existsSync(path)
 
-  if (folderExists) {
-    const shouldWrite = await prompts({
-      type: 'confirm',
-      name: 'overwrite',
-      message:
-        'This folder already exists, do you want to continue (this may overwrite some files)',
-    })
-
-    if (!shouldWrite.overwrite) return
-  }
-
-  new Listr([
+  await new Listr([
     {
       title: 'Creating directories',
       task: () => {
@@ -35,9 +24,42 @@ export const init = async (path: string) => {
     {
       title: 'Creating files',
       task: () =>
-        defaultStructure.files.forEach((file) =>
-          writeFileSync(join(path, file.path), file.contents)
-        ),
+        defaultStructure.files.forEach((file) => {
+          if (!existsSync(join(path, file.path)))
+            writeFileSync(join(path, file.path), file.contents)
+        }),
     },
   ]).run()
+}
+
+export const checkInit = async (path: string) => {
+  const folderExists = existsSync(path)
+
+  if (!folderExists) {
+    const shouldInit = await prompts({
+      type: 'confirm',
+      name: 'create',
+      message: "This folder doesn't exist, do you want to initialize it?",
+    })
+
+    if (shouldInit.create) {
+      await init(path)
+    } else {
+      throw new Error("Cannot call dev on an directory that doesn't exists")
+    }
+  }
+
+  const appExists = existsSync(join(path, 'app.json'))
+
+  if (!appExists) {
+    const shouldInit = await prompts({
+      type: 'confirm',
+      name: 'create',
+      message: 'This workspace is not complete. Do you want to initialize it?',
+    })
+
+    if (shouldInit.create) {
+      await init(path)
+    }
+  }
 }

@@ -8,7 +8,7 @@ import { MemlC } from 'meml'
 import { Server } from 'socket.io'
 
 import { Config, getConfig } from '../utils'
-import { init } from './init'
+import { checkInit, init } from './init'
 import { createServer } from 'http'
 
 const compilerReset = () => {
@@ -60,34 +60,7 @@ const compileFromConfig = async (
 }
 
 export const dev = async (path: string) => {
-  const folderExists = existsSync(path)
-  const appExists = existsSync(join(path, 'app.json'))
-
-  if (!folderExists) {
-    const shouldInit = await prompts({
-      type: 'confirm',
-      name: 'create',
-      message: "This folder doesn't exist, do you want to initialize it?",
-    })
-
-    if (shouldInit.create) {
-      await init(path)
-    } else {
-      throw new Error("Cannot call dev on an directory that doesn't exists")
-    }
-  }
-
-  if (!appExists) {
-    const shouldInit = await prompts({
-      type: 'confirm',
-      name: 'create',
-      message: 'This workspace is not complete. Do you want to initialize it?',
-    })
-
-    if (shouldInit.create) {
-      await init(path)
-    }
-  }
+  await checkInit(path)
 
   let config: Config
   let watcher: FSWatcher
@@ -95,7 +68,7 @@ export const dev = async (path: string) => {
   let server
   let io: Server
 
-  new Listr([
+  await new Listr([
     {
       title: 'Get config file',
       task: async () => (config = getConfig(path)),

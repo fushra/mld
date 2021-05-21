@@ -4,6 +4,7 @@ import { join } from 'path'
 export const defaultConfig: Config = {
   pages: [],
   srcDir: 'src',
+  out: 'build',
   devServer: {
     port: 8080,
   },
@@ -12,6 +13,7 @@ export const defaultConfig: Config = {
 export interface Config {
   pages: string[]
   srcDir?: string
+  out?: string
   devServer?: {
     port: number
   }

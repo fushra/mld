@@ -12,6 +12,10 @@
     {
       "path": "app.json",
       "contents": "{\n    \"pages\": [\"index\"]\n}"
+    },
+    {
+      "path": ".gitignore",
+      "contents": "build/\n.DS_Store"
     }
   ]
 }
