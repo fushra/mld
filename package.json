@@ -27,14 +27,18 @@
   "devDependencies": {
     "@types/listr": "^0.14.3",
     "@types/node": "^15.3.1",
+    "@types/promise-fs": "^2.1.1",
     "@types/prompts": "^2.0.12",
+    "promise-fs": "^2.1.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "chokidar": "^3.5.1",
     "commander": "^7.2.0",
     "listr": "^0.14.3",
     "meml": "^1.0.0-b.2",
-    "prompts": "^2.4.1"
+    "prompts": "^2.4.1",
+    "socket.io": "^4.1.2"
   }
 }

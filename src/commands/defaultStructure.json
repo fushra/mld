@@ -3,7 +3,7 @@
   "files": [
     {
       "path": "src/index.meml",
-      "contents": "(head \n    (title 'MEML app')\n)\n(body \n    (h1 'Hello world!'))"
+      "contents": "(head \n    (title 'MEML app')\n)\n(body \n    (h1 'Hello world!')\n)"
     },
     {
       "path": ".vscode/extensions.json",

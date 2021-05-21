@@ -1,51 +1,166 @@
-import { existsSync, mkdirSync } from "fs"
-import Listr from "listr"
-import { join } from "path/posix"
-import prompts from "prompts"
+import { FSWatcher, watch } from 'chokidar'
+import { existsSync } from 'fs'
+import { readFileSync } from 'promise-fs'
+import Listr from 'listr'
+import { join } from 'path'
+import prompts from 'prompts'
+import { MemlC } from 'meml'
+import { Server } from 'socket.io'
 
-import { getConfig } from "../utils"
-import { init } from "./init"
+import { Config, getConfig } from '../utils'
+import { init } from './init'
+import { createServer } from 'http'
+
+const compilerReset = () => {
+  MemlC.hadError = false
+  MemlC.errors = ''
+}
+
+const compileFile = async (path: string): Promise<string> => {
+  compilerReset()
+
+  const compiler = new MemlC()
+  const fileContents = await readFileSync(path).toString()
+
+  return compiler.translate(fileContents, path)
+}
+
+const compileFromConfig = async (
+  path: string,
+  config: Config
+): Promise<Map<string, string>> => {
+  let compiledFiles = new Map()
+
+  for (let file of config.pages) {
+    if (!file.includes('.meml')) file += '.meml'
+
+    const storePath = file.replace('.meml', '.html')
+    let compiled = await compileFile(join(path, config.srcDir, file))
+
+    if (compiled.includes('</head>')) {
+      compiled = compiled.replace(
+        '</head>',
+        `<script src="/socket.io/socket.io.js"></script><script>const socket = io("http://localhost:${config.devServer.port}");socket.on("reload",() => window.location.reload());</script></head>`
+      )
+    } else {
+      console.warn(
+        `The file ${file} doesn't have a head and cannot have live reloading`
+      )
+    }
+
+    compiledFiles.set(storePath, compiled)
+    if (storePath.includes('index.html'))
+      compiledFiles.set(
+        storePath.replace('index.html', '/').replace('//', '/'),
+        compiled
+      )
+  }
+
+  return compiledFiles
+}
 
 export const dev = async (path: string) => {
-    const folderExists = existsSync(path)
-    const appExists = existsSync(join(path, 'app.json'))
+  const folderExists = existsSync(path)
+  const appExists = existsSync(join(path, 'app.json'))
 
-    if (!folderExists) {
-        const shouldInit = await prompts({
-            type: 'confirm',
-            name: 'create',
-            message:
-                'This folder doesn\'t exist, do you want to initialize it?',
-        })
+  if (!folderExists) {
+    const shouldInit = await prompts({
+      type: 'confirm',
+      name: 'create',
+      message: "This folder doesn't exist, do you want to initialize it?",
+    })
 
-        if (shouldInit.create) {
-            await init(path)
-        } else {
-            throw new Error('Cannot call dev on an directory that doesn\'t exists')
-        }
+    if (shouldInit.create) {
+      await init(path)
+    } else {
+      throw new Error("Cannot call dev on an directory that doesn't exists")
     }
+  }
 
-    if (!appExists) {
-        const shouldInit = await prompts({
-            type: 'confirm',
-            name: 'create',
-            message:
-                'This workspace is not complete. Do you want to initialize it?',
-        })
+  if (!appExists) {
+    const shouldInit = await prompts({
+      type: 'confirm',
+      name: 'create',
+      message: 'This workspace is not complete. Do you want to initialize it?',
+    })
 
-        if (shouldInit.create) {
-            await init(path)
-        }
+    if (shouldInit.create) {
+      await init(path)
     }
+  }
 
-    let config
+  let config: Config
+  let watcher: FSWatcher
+  let files: Map<string, string>
+  let server
+  let io: Server
 
-    new Listr([
-        {
-            title: 'Get config file',
-            task: () => {
-                config = getConfig(path)
+  new Listr([
+    {
+      title: 'Get config file',
+      task: async () => (config = getConfig(path)),
+    },
+    {
+      title: 'Create watcher',
+      task: () => {
+        watcher = watch(join(path, config.srcDir))
+      },
+    },
+    {
+      title: 'Compile',
+      task: async () => (files = await compileFromConfig(path, config)),
+    },
+    {
+      title: `Start server`,
+      task: (_ctx, task) =>
+        new Promise<void>((resolve) => {
+          task.title = `Start server on port ${config.devServer.port}`
+
+          // Create the server
+          server = createServer((req, res) => {
+            if (files.has(req.url)) {
+              res.writeHead(200, { 'Content-Type': 'text/html' })
+              res.write(files.get(req.url))
+              res.end()
+            } else {
+              res.writeHead(404, { 'Content-Type': 'text/html' })
+              res.write(
+                'Could not find this file in your source code. Please try adding it to your config file'
+              )
+              res.end()
+            }
+          })
+
+          // Add socket.io
+          io = new Server(server)
+
+          // Start listening
+          server.listen(config.devServer.port, () => {
+            // Leave some times for the socket sessions to sync then reload all that are connected
+            setTimeout(() => {
+              io.sockets.emit('reload')
+              resolve()
+            }, 500)
+          })
+        }),
+    },
+    {
+      title: 'Start watching for changes',
+      task: () => {
+        const onModification = () => {
+          new Listr([
+            {
+              title: 'Recompiling',
+              task: async () => {
+                files = await compileFromConfig(path, config)
+                io.sockets.emit('reload')
+              },
             },
-        },
-    ]).run()
+          ]).run()
+        }
+
+        watcher.on('add', onModification).on('change', onModification)
+      },
+    },
+  ]).run()
 }
