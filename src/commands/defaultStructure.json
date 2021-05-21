@@ -3,19 +3,39 @@
   "files": [
     {
       "path": "src/index.meml",
+      "type": "text",
       "contents": "(head \n    (title 'MEML app')\n)\n(body \n    (h1 'Hello world!')\n)"
     },
     {
       "path": ".vscode/extensions.json",
+      "type": "text",
       "contents": "{\"recommendations\": [\"fushra.meml\"]}"
     },
     {
       "path": "app.json",
+      "type": "text",
       "contents": "{\n    \"pages\": [\"index\"]\n}"
     },
     {
       "path": ".gitignore",
+      "type": "text",
       "contents": "build/\n.DS_Store"
+    },
+    {
+      "path": "package.json",
+      "type": "json",
+      "contents": {
+        "_note": "This file was generated automatically by mdt. If you want to configure mdt edit app.json",
+        "name": "meml-site",
+        "private": true,
+        "scripts": {
+          "dev": "mdt dev",
+          "build": "mdt build"
+        },
+        "devDependencies": {
+          "mdt": "^1.0.0-a.0"
+        }
+      }
     }
   ]
 }

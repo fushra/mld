@@ -25,8 +25,15 @@ export const init = async (path: string) => {
       title: 'Creating files',
       task: () =>
         defaultStructure.files.forEach((file) => {
-          if (!existsSync(join(path, file.path)))
-            writeFileSync(join(path, file.path), file.contents)
+          if (!existsSync(join(path, file.path))) {
+            if (file.type == 'text')
+              writeFileSync(join(path, file.path), file.contents as string)
+            if (file.type == 'json')
+              writeFileSync(
+                join(path, file.path),
+                JSON.stringify(file.contents as Object)
+              )
+          }
         }),
     },
   ]).run()

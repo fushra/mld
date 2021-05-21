@@ -1,5 +1,5 @@
 {
-  "name": "mdev",
+  "name": "mdt",
   "version": "1.0.0-a.0",
   "description": "An experemental everything environment for meml ",
   "main": "dist/app.js",
