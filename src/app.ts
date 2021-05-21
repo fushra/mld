@@ -3,7 +3,7 @@ import { Command } from 'commander'
 
 // Local imports
 import packageConfig from '../package.json'
-import { init } from './commands'
+import { dev, init } from './commands'
 import { currentOrPath } from './utils'
 
 // Create a commander context for this program
@@ -24,7 +24,7 @@ program
 program
   .command('dev [directory]')
   .description('Start a dev server in the current or specified directory')
-  .action(() => console.log('TODO'))
+  .action((directory) => dev(currentOrPath(directory)))
 
 // The command for compiling into an optimized source bundle
 // TODO: Implement

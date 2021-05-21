@@ -34,6 +34,7 @@
   "dependencies": {
     "commander": "^7.2.0",
     "listr": "^0.14.3",
+    "meml": "^1.0.0-b.2",
     "prompts": "^2.4.1"
   }
 }

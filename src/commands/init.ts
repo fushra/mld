@@ -17,7 +17,7 @@ export const init = async (path: string) => {
         'This folder already exists, do you want to continue (this may overwrite some files)',
     })
 
-    if (!shouldWrite) return
+    if (!shouldWrite.overwrite) return
   }
 
   new Listr([
