@@ -1,6 +1,6 @@
 {
   "name": "mld",
-  "version": "1.0.0-a.0",
+  "version": "1.0.0-a.1",
   "description": "An experimental everything environment for meml ",
   "main": "dist/app.js",
   "bin": "dist/app.js",
@@ -38,8 +38,8 @@
     "commander": "^7.2.0",
     "listr": "^0.14.3",
     "meml": "^1.0.0-b.2",
-    "prompts": "^2.4.1",
     "promise-fs": "^2.1.1",
+    "prompts": "^2.4.1",
     "socket.io": "^4.1.2"
   }
 }
