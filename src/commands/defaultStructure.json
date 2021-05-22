@@ -33,7 +33,7 @@
           "build": "mdt build"
         },
         "devDependencies": {
-          "mdt": "^1.0.0-a.0"
+          "mdt": "^1.0.0-a.1"
         }
       }
     }
