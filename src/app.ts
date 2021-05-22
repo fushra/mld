@@ -2,7 +2,6 @@
 import { Command } from 'commander'
 
 // Local imports
-import packageConfig from '../package.json'
 import { build, dev, init } from './commands'
 import { currentOrPath } from './utils'
 
@@ -10,7 +9,9 @@ import { currentOrPath } from './utils'
 const program = new Command()
 
 // Set a bunch of basic stuff from the package.json
-program.version(packageConfig.version).description(packageConfig.description)
+program
+  .version('1.0.0-a.0')
+  .description('An experimental everything environment for meml')
 
 // The initialization command for initializing a directory
 program

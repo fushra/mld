@@ -1,11 +1,12 @@
 {
-  "name": "mdt",
+  "name": "mld",
   "version": "1.0.0-a.0",
-  "description": "An experemental everything environment for meml ",
+  "description": "An experimental everything environment for meml ",
   "main": "dist/app.js",
+  "bin": "dist/app.js",
   "scripts": {
     "app": "ts-node ./src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && echo '#!/usr/bin/env node\n' >  tmpfile && cat ./dist/app.js >> tmpfile && mv tmpfile ./dist/app.js"
   },
   "repository": {
     "type": "git",
