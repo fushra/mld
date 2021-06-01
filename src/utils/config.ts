@@ -5,6 +5,7 @@ export const defaultConfig: Config = {
   pages: [],
   srcDir: 'src',
   out: 'build',
+  publicDir: 'public',
   devServer: {
     port: 8080,
   },
@@ -14,6 +15,7 @@ export interface Config {
   pages: string[]
   srcDir?: string
   out?: string
+  publicDir?: string
   devServer?: {
     port: number
   }

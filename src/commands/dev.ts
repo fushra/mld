@@ -1,9 +1,8 @@
 import { FSWatcher, watch } from 'chokidar'
 import { existsSync } from 'fs'
-import { readFileSync } from 'promise-fs'
+import { readFileSync } from 'fs-extra'
 import Listr from 'listr'
 import { join } from 'path'
-import prompts from 'prompts'
 import { MemlC } from 'meml'
 import { Server } from 'socket.io'
 
@@ -94,6 +93,10 @@ export const dev = async (path: string) => {
             if (files.has(req.url)) {
               res.writeHead(200, { 'Content-Type': 'text/html' })
               res.write(files.get(req.url))
+              res.end()
+            } else if (existsSync(join(path, config.publicDir, req.url))) {
+              res.writeHead(200)
+              res.write(readFileSync(join(path, config.publicDir, req.url)))
               res.end()
             } else {
               res.writeHead(404, { 'Content-Type': 'text/html' })

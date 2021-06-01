@@ -1,5 +1,5 @@
 import { join, dirname } from 'path'
-import { existsSync, mkdir, readFile, writeFile } from 'promise-fs'
+import { existsSync, mkdir, readFile, writeFile } from 'fs-extra'
 import Listr from 'listr'
 
 import { Config, getConfig } from '../utils'

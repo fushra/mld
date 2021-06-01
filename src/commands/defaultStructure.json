@@ -1,5 +1,5 @@
 {
-  "folders": [".vscode", "src"],
+  "folders": [".vscode", "src", "public"],
   "files": [
     {
       "path": "src/index.meml",
@@ -14,7 +14,7 @@
     {
       "path": "app.json",
       "type": "text",
-      "contents": "{\n    \"pages\": [\"index\"]\n}"
+      "contents": "{\n    \"pages\": [\"index\"]\n    \"publicDir\":\"public\"\n}"
     },
     {
       "path": ".gitignore",
