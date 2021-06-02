@@ -3,21 +3,17 @@ import { existsSync, mkdir, readFile, writeFile } from 'fs-extra'
 import Listr from 'listr'
 
 import { Config, getConfig } from '../utils'
-import { MemlC } from 'meml'
+import { MemlCore } from 'meml'
 import { checkInit } from './init'
-
-const compilerReset = () => {
-  MemlC.hadError = false
-  MemlC.errors = ''
-}
+import { sleep } from '../utils/sleep'
 
 const compileFile = async (path: string): Promise<string> => {
-  compilerReset()
+  MemlCore.resetErrors()
 
-  const compiler = new MemlC()
+  const compiler = new MemlCore()
   const fileContents = (await readFile(path)).toString()
 
-  return compiler.translate(fileContents, path)
+  return await compiler.sourceToWeb(fileContents, path)
 }
 
 const compileFromConfig = async (
@@ -26,17 +22,21 @@ const compileFromConfig = async (
 ): Promise<Map<string, string>> => {
   let compiledFiles = new Map()
 
-  for (let file of config.pages) {
-    if (!file.includes('.meml')) file += '.meml'
+  await sleep(100)
 
-    const storePath = join(path, config.out, file.replace('.meml', '.html'))
-    const compiled = await compileFile(join(path, config.srcDir, file))
+  await Promise.all(
+    config.pages.map(async (file) => {
+      if (!file.includes('.meml')) file += '.meml'
 
-    if (!existsSync(dirname(storePath))) {
-      await mkdir(dirname(storePath), { recursive: true })
-    }
-    await writeFile(storePath, compiled)
-  }
+      const storePath = join(path, config.out, file.replace('.meml', '.html'))
+      const compiled = await compileFile(join(path, config.srcDir, file))
+
+      if (!existsSync(dirname(storePath))) {
+        await mkdir(dirname(storePath), { recursive: true })
+      }
+      return await writeFile(storePath, compiled)
+    })
+  )
 
   return compiledFiles
 }

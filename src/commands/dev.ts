@@ -3,25 +3,21 @@ import { existsSync } from 'fs'
 import { readFileSync } from 'fs-extra'
 import Listr from 'listr'
 import { join } from 'path'
-import { MemlC } from 'meml'
+import { MemlCore } from 'meml'
 import { Server } from 'socket.io'
 
 import { Config, getConfig } from '../utils'
 import { checkInit, init } from './init'
 import { createServer } from 'http'
-
-const compilerReset = () => {
-  MemlC.hadError = false
-  MemlC.errors = ''
-}
+import { sleep } from '../utils/sleep'
 
 const compileFile = async (path: string): Promise<string> => {
-  compilerReset()
+  MemlCore.resetErrors()
 
-  const compiler = new MemlC()
+  const compiler = new MemlCore()
   const fileContents = await readFileSync(path).toString()
 
-  return compiler.translate(fileContents, path)
+  return await compiler.sourceToWeb(fileContents, path)
 }
 
 const compileFromConfig = async (
@@ -30,30 +26,35 @@ const compileFromConfig = async (
 ): Promise<Map<string, string>> => {
   let compiledFiles = new Map()
 
-  for (let file of config.pages) {
-    if (!file.includes('.meml')) file += '.meml'
+  await sleep(100)
 
-    const storePath = file.replace('.meml', '.html')
-    let compiled = await compileFile(join(path, config.srcDir, file))
+  await Promise.all(
+    config.pages.map(async (file) => {
+      if (!file.includes('.meml')) file += '.meml'
 
-    if (compiled.includes('</head>')) {
-      compiled = compiled.replace(
-        '</head>',
-        `<script src="/socket.io/socket.io.js"></script><script>const socket = io("http://localhost:${config.devServer.port}");socket.on("reload",() => window.location.reload());</script></head>`
-      )
-    } else {
-      console.warn(
-        `The file ${file} doesn't have a head and cannot have live reloading`
-      )
-    }
+      const storePath = file.replace('.meml', '.html')
+      let compiled = await compileFile(join(path, config.srcDir, file))
 
-    compiledFiles.set(storePath, compiled)
-    if (storePath.includes('index.html'))
-      compiledFiles.set(
-        storePath.replace('index.html', '/').replace('//', '/'),
-        compiled
-      )
-  }
+      if (compiled.includes('</head>')) {
+        compiled = compiled.replace(
+          '</head>',
+          `<script src="/socket.io/socket.io.js"></script><script>const socket = io("http://localhost:${config.devServer.port}");socket.on("reload",() => window.location.reload());</script></head>`
+        )
+      } else {
+        console.warn(
+          `The file ${file} doesn't have a head and cannot have live reloading`
+        )
+        console.log(compiled)
+      }
+
+      compiledFiles.set(storePath, compiled)
+      if (storePath.includes('index.html'))
+        compiledFiles.set(
+          storePath.replace('index.html', '/').replace('//', '/'),
+          compiled
+        )
+    })
+  )
 
   return compiledFiles
 }

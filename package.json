@@ -28,18 +28,18 @@
   "devDependencies": {
     "@types/fs-extra": "^9.0.11",
     "@types/listr": "^0.14.3",
-    "@types/node": "^15.3.1",
+    "@types/node": "^15.6.1",
     "@types/promise-fs": "^2.1.1",
     "@types/prompts": "^2.0.12",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "chokidar": "^3.5.1",
     "commander": "^7.2.0",
     "fs-extra": "^10.0.0",
     "listr": "^0.14.3",
-    "meml": "^1.0.0-b.2",
+    "meml": "^1.0.0-b.5",
     "promise-fs": "^2.1.1",
     "prompts": "^2.4.1",
     "socket.io": "^4.1.2"
