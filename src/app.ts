@@ -9,9 +9,7 @@ import { currentOrPath } from './utils'
 const program = new Command()
 
 // Set a bunch of basic stuff from the package.json
-program
-  .version('1.0.0-a.0')
-  .description('An experimental everything environment for meml')
+program.version('1.0.0-a.3').description('The MEML tooling system')
 
 // The initialization command for initializing a directory
 program
