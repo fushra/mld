@@ -7,7 +7,7 @@ import { MemlCore } from 'meml'
 import { Server } from 'socket.io'
 
 import { Config, getConfig } from '../utils'
-import { checkInit, init } from './init'
+import { checkInit } from './init'
 import { createServer } from 'http'
 import { sleep } from '../utils/sleep'
 
