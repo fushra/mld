@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs'
 import { MemlCore } from 'meml'
 import { join } from 'path'
-import { getLastWorkingDir } from './fs'
 
 export const defaultConfig: Config = {
   pages: [],
@@ -54,7 +53,7 @@ export const getConfig = (path: string): Config => {
   const config = { ...defaultConfig, ...parsed } as Config
 
   if (!_appliedConfig) {
-    applyConfig(config)
+    applyConfig(config, path)
     _appliedConfig = true
   }
 
@@ -66,8 +65,8 @@ export const getConfig = (path: string): Config => {
  *
  * @param config The project config
  */
-export const applyConfig = (config: Config) => {
+export const applyConfig = (config: Config, path: string) => {
   MemlCore.rootPath = config.root
   MemlCore.shouldLink = config.codeSplitting
-  MemlCore.distPath = join(getLastWorkingDir(), config.out)
+  MemlCore.distPath = join(path, config.out)
 }

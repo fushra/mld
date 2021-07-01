@@ -22,7 +22,7 @@
     {
       "path": ".gitignore",
       "type": "text",
-      "contents": "build/\n.DS_Store"
+      "contents": "build/\n.DS_Store\ndist/"
     },
     {
       "path": "package.json",
@@ -32,8 +32,8 @@
         "name": "meml-site",
         "private": true,
         "scripts": {
-          "dev": "mdt dev",
-          "build": "mdt build"
+          "dev": "mld dev",
+          "build": "mld build"
         },
         "devDependencies": {
           "mld": "^1.0.0-a.3"

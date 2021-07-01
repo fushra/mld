@@ -2,7 +2,7 @@
 import { Command } from 'commander'
 
 // Local imports
-import { build, dev, init } from './commands'
+import { build, deploy, dev, init } from './commands'
 import { currentOrPath } from './utils'
 
 // Create a commander context for this program
@@ -26,9 +26,16 @@ program
 // The command for compiling into an optimized source bundle
 program
   .command('build [directory]')
-  .option('-o, --out', 'a custom output directory')
   .description('Build an optimized bundle for the current directory')
   .action((directory) => build(currentOrPath(directory)))
+
+// An interactive prompt to prepare your project for deployment on one of our supported platforms
+program
+  .command('deploy [directory]')
+  .description(
+    'An interactive prompt to prepare your project for deployment on one of our supported platforms'
+  )
+  .action((directory) => deploy(currentOrPath(directory)))
 
 // Parse the CLI arguments
 program.parse(process.argv)
