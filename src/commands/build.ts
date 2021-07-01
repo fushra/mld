@@ -8,7 +8,11 @@ import { checkInit } from './init'
 import { sleep } from '../utils/sleep'
 
 const compileFile = async (path: string): Promise<string> => {
+  // Reset any errors previously triggered
   MemlCore.resetErrors()
+
+  // Make MemlCore optimise outputs
+  MemlCore.isProduction = true
 
   const compiler = new MemlCore()
   const fileContents = (await readFile(path)).toString()
