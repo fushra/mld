@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { mkdirSync } from 'fs-extra'
+import { existsSync, readFileSync, renameSync, writeFileSync } from 'fs'
+import { mkdirSync, write } from 'fs-extra'
 import Listr from 'listr'
 import { join } from 'path'
 import prompts from 'prompts'
@@ -9,6 +9,9 @@ import { Config, getConfig } from '../utils'
 import { checkInit } from './init'
 
 const gitRegexp = /(\w|_|-)+\/(\w|_|-)+\.git/
+
+const txtDoc = (name: string) =>
+  readFileSync(join(__dirname, 'docs', `${name}.txt`)).toString()
 
 export const deploy = async (path: string) => {
   await checkInit(path)
@@ -72,6 +75,9 @@ export const deploy = async (path: string) => {
   const username = originPath.replace('.git', '').split('/')[0]
   const repo = originPath.replace('.git', '').split('/')[1]
 
+  // ====================================
+  // Provider generation for github pages
+  // ====================================
   if (response.provider == 'gh') {
     if (!isGithub) {
       console.error(
@@ -97,16 +103,52 @@ export const deploy = async (path: string) => {
     )
 
     console.log(
-      `Open your repositories' settings tab (https://github.com/${username}/${repo}/settings/pages) and change the source to be 'gh-pages'. You might need to wait a few minutes for the deployment to finish. Click save and go to https://${username}.github.io/${repo}/`
+      `Open your repositories' settings tab (https://github.com/${username}/${repo}/settings/pages)
+and change the source to be 'gh-pages'. You might need to wait a few minutes for
+the deployment to finish. Click save and go to https://${username}.github.io/${repo}/`
     )
   }
 
+  // ========================================
+  // Provider generation for cloudflare pages
+  // ========================================
   if (response.provider == 'cf') {
-    diskConfig.root = 'dist'
+    diskConfig.out = 'dist'
+    writeFileSync(join(path, '.nvmrc'), 'node')
 
     console.log(
-      'Go to your cloudflare pages, dashboard and select your repo. Leave all the default options and click "Save and Deploy"'
+      `Go to your cloudflare pages, dashboard and select your repo. Leave all the
+default options and click "Save and Deploy"`
     )
+  }
+
+  // ==============================
+  // Provider generation for Vercel
+  // ==============================
+  if (response.provider == 'v') {
+    diskConfig.out = 'public'
+
+    // Vercel uses `public` as its deployment directory
+    if (config.publicDir == 'public') {
+      // Change the default public directory to `static`
+      diskConfig.publicDir = 'static'
+
+      // If there is a `public` dir, move it to `static`
+      if (existsSync(join(path, 'public'))) {
+        renameSync(join(path, 'public'), join(path, 'static'))
+      }
+    }
+
+    console.log(txtDoc('vercelPublish'))
+  }
+
+  // ===============================
+  // Provider generation for Netlify
+  // ===============================
+  if (response.provider == 'n') {
+    diskConfig.out = 'dist'
+
+    console.log(txtDoc('netlifyPublish'))
   }
 
   writeFileSync(join(path, 'app.json'), JSON.stringify(diskConfig))

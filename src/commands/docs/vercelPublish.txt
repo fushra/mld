@@ -1,0 +1,7 @@
+Note: To take into account vercel's defaults, if you have a `public` directory
+bound to publicDir in your app.json, it will be moved to `static`. If you use
+some other directory, no changes will have been made.
+
+Open the vercel import page (https://vercel.com/new3) and search for your git
+repository. Click import next to the repository name. Leave the defaults as is
+and click "Deploy". Wait for your build to finish. 

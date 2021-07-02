@@ -1,0 +1,2 @@
+Open the netlify site creation page (https://app.netlify.com/start) and select
+the repository. Leave all the settings as default and click "Deploy site".
