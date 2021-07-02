@@ -1,9 +1,28 @@
 // Module imports
 import { Command } from 'commander'
+import { readFileSync } from 'fs'
+import fetch from 'node-fetch'
+import { join } from 'path'
 
 // Local imports
 import { build, deploy, dev, init } from './commands'
 import { currentOrPath } from './utils'
+
+fetch('https://raw.githubusercontent.com/fushra/mld/main/package.json')
+  .then()
+  .then(async (res) => {
+    const json = await res.json()
+
+    const packagePath = join(__dirname, '..', 'package.json')
+    const packageContents = JSON.parse(readFileSync(packagePath).toString())
+
+    if (json.version != packageContents.version) {
+      console.log('A new version of mld is available, please upgrade')
+    }
+  })
+  .catch(() => {
+    // Errors here do not matter
+  })
 
 // Create a commander context for this program
 const program = new Command()
