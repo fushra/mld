@@ -47,7 +47,7 @@ const compileFromConfig = async (
         console.log(compiled)
       }
 
-      compiledFiles.set(storePath, compiled)
+      compiledFiles.set(`/${storePath}`, compiled)
       if (storePath.includes('index.html'))
         compiledFiles.set(
           storePath.replace('index.html', '/').replace('//', '/'),
