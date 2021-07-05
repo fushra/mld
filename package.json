@@ -1,6 +1,6 @@
 {
   "name": "mld",
-  "version": "1.0.0-a.5",
+  "version": "1.0.0-a.6",
   "description": "An experimental everything environment for meml ",
   "main": "dist/app.js",
   "bin": "dist/app.js",
