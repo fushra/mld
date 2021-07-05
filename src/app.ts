@@ -16,7 +16,7 @@ fetch('https://raw.githubusercontent.com/fushra/mld/main/package.json')
     const packagePath = join(__dirname, '..', 'package.json')
     const packageContents = JSON.parse(readFileSync(packagePath).toString())
 
-    if (json.version != packageContents.version) {
+    if (json.version !== packageContents.version) {
       console.log('A new version of mld is available, please upgrade')
     }
   })
@@ -55,6 +55,10 @@ program
     'An interactive prompt to prepare your project for deployment on one of our supported platforms'
   )
   .action((directory) => deploy(currentOrPath(directory)))
+
+program.command('pause', { hidden: true }).action(async () => {
+  await new Promise((res) => setTimeout(res, 5000))
+})
 
 // Parse the CLI arguments
 program.parse(process.argv)
