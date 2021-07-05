@@ -633,10 +633,10 @@ memfs@^3.2.2:
   dependencies:
     fs-monkey "1.0.3"
 
-meml@^1.0.0-b.6:
-  version "1.0.0-b.6"
-  resolved "https://registry.yarnpkg.com/meml/-/meml-1.0.0-b.6.tgz#5b1f29b41f6361b762589884bca3b85409d52666"
-  integrity sha512-RsnpkaWXOZja39D5b/Tykihq5mRptbODPzu9/tKjXMWsWImE5T3C8QRn20st+oYSRRJbnvinZsxp1Fcl43CPJQ==
+meml@^1.0.0-b.8:
+  version "1.0.0-b.8"
+  resolved "https://registry.yarnpkg.com/meml/-/meml-1.0.0-b.8.tgz#3af67ca758366aae6588b5c9b932fe5ecd3eed43"
+  integrity sha512-2ghIYAPzD5RmZHYBpUnDIGqaqEkHimsPZ5Nj1z/RFa7qKgbWOPWMt2sS1iPsc0n+T5STiWLhCKJibSAyC60LNQ==
   dependencies:
     clean-css "^5.1.2"
     commander "^7.2.0"

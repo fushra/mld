@@ -69,4 +69,5 @@ export const applyConfig = (config: Config, path: string) => {
   MemlCore.rootPath = config.root
   MemlCore.shouldLink = config.codeSplitting
   MemlCore.distPath = join(path, config.out)
+  MemlCore.sourcePath = join(path, config.srcDir)
 }
