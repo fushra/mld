@@ -1,5 +1,5 @@
 import { join, dirname } from 'path'
-import { existsSync, mkdir, readFile, writeFile } from 'fs-extra'
+import { copySync, existsSync, mkdir, readFile, writeFile } from 'fs-extra'
 import Listr from 'listr'
 
 import { Config, getConfig } from '../utils'
@@ -25,6 +25,10 @@ const compileFromConfig = async (
   config: Config
 ): Promise<Map<string, string>> => {
   let compiledFiles = new Map()
+
+  if (existsSync(join(path, config.publicDir))) {
+    copySync(join(path, config.publicDir), join(path, config.out))
+  }
 
   await sleep(100)
 
