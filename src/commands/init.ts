@@ -31,7 +31,7 @@ export const init = async (path: string) => {
             if (file.type == 'json')
               writeFileSync(
                 join(path, file.path),
-                JSON.stringify(file.contents as Object)
+                JSON.stringify(file.contents as Object, null, 2)
               )
           }
         }),

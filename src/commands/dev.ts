@@ -10,6 +10,7 @@ import { Config, getConfig } from '../utils'
 import { checkInit } from './init'
 import { createServer } from 'http'
 import { sleep } from '../utils/sleep'
+import { maintainer } from '../utils/maintainer'
 
 const compileFile = async (path: string): Promise<string> => {
   MemlCore.resetErrors()
@@ -69,6 +70,10 @@ export const dev = async (path: string) => {
   let io: Server
 
   await new Listr([
+    {
+      title: 'Maintenance',
+      task: async () => maintainer(path),
+    },
     {
       title: 'Get config file',
       task: async () => (config = getConfig(path)),
